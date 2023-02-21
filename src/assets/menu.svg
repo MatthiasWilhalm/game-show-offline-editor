@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 513 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" xmlSpace="preserve" xmlnsSerif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,-7870,0)">
+        <g transform="matrix(1,0,0,1,2.22923,0)">
+            <rect id="menu" x="7868" y="0" width="512" height="512" style="fill:none;"/>
+            <g id="menu1" serifId="menu">
+                <g transform="matrix(0.493126,0,0,0.493126,7877.44,28.6688)">
+                    <g transform="matrix(1,0,0,1,-7,0)">
+                        <path d="M917,160C917,111.431 877.569,72 829,72L185,72C136.431,72 97,111.431 97,160C97,208.569 136.431,248 185,248L829,248C877.569,248 917,208.569 917,160Z"/>
+                    </g>
+                    <g transform="matrix(1,0,0,1,-7,301)">
+                        <path d="M917,160C917,111.431 877.569,72 829,72L185,72C136.431,72 97,111.431 97,160C97,208.569 136.431,248 185,248L829,248C877.569,248 917,208.569 917,160Z"/>
+                    </g>
+                    <g transform="matrix(1,0,0,1,-7,602)">
+                        <path d="M917,160C917,111.431 877.569,72 829,72L185,72C136.431,72 97,111.431 97,160C97,208.569 136.431,248 185,248L829,248C877.569,248 917,208.569 917,160Z"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

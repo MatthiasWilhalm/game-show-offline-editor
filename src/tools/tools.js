@@ -37,3 +37,8 @@ export function storeModerationEvent(event) {
 export function getModerationEvent() {
     return JSON.parse(sessionStorage.getItem('moderationEvent'));
 }
+
+export function triggerEventUpdate() {
+    const eventUpdate = sessionStorage.getItem('eventUpdate');
+    sessionStorage.setItem('eventUpdate', eventUpdate === 'true' ? 'false' : 'true');
+}

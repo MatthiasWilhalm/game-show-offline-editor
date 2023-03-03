@@ -4,10 +4,6 @@ import { Event } from "../tools/Event";
 import { Game } from "../tools/Game";
 import { getModerationEvent, storeModerationEvent } from "../tools/tools";
 
-// import electron from 'electron';
-// import path from 'path';
-
-// const dialog = electron.remote.dialog;
 
 const Editor = props => {
 
@@ -23,6 +19,17 @@ const Editor = props => {
     useEffect(() => {
         setEvent(getModerationEvent() ?? new Event("", []));
     }, []);
+
+    // window.onstorage = event => {
+    //     if(event.storageArea === sessionStorage && event.key === 'eventUpdate') {
+    //         setEvent(getModerationEvent());
+    //     }
+    // };
+
+    window.electronAPI.handleEventUpdate((_event, value) => {
+        setEvent(value);
+        // event.sender.send('update-event', value)
+    })
 
     const handleUpdate = (name, value) => {
         event[name] = value;

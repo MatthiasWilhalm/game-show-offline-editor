@@ -27,7 +27,7 @@ const Editor = props => {
     // };
 
     window.electronAPI.handleEventUpdate((_event, value) => {
-        setEvent(value);
+        setEvent(JSON.parse(value));
         // event.sender.send('update-event', value)
     })
 
@@ -768,16 +768,6 @@ const Editor = props => {
                     </h1>
                 </div>
                 <div className="mod-menu-button-array-2">
-                    <div className="mod-menu-button" onClick={saveEvent}>
-                        Save
-                    </div>
-                    {/* <div className="mod-menu-button" onClick={openFile}>
-                        Load
-                    </div> */}
-                    <div className="mod-menu-button" onClick={triggerUpload}>
-                        Load
-                        <input type="file" onChange={uploadEvent} id="upload" style={{display: 'none'}}/>
-                    </div>
                     <div className="mod-menu-button" onClick={downloadEvent}>
                         Down load
                     </div>

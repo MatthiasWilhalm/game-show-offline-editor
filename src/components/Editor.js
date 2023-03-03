@@ -1,8 +1,13 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, createRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Event } from "../tools/Event";
 import { Game } from "../tools/Game";
 import { getModerationEvent, storeModerationEvent } from "../tools/tools";
+
+// import electron from 'electron';
+// import path from 'path';
+
+// const dialog = electron.remote.dialog;
 
 const Editor = props => {
 
@@ -11,6 +16,9 @@ const Editor = props => {
     const [event, setEvent] = useState(new Event("", []));
     const [newGameSelector, setNewGameSelector] = useState("quiz");
     const [focusedGame, setFocusedGame] = useState(0);
+
+    const refUpload = createRef();
+    console.log("editor");
 
     useEffect(() => {
         setEvent(getModerationEvent() ?? new Event("", []));
@@ -672,8 +680,73 @@ const Editor = props => {
     }
 
     const saveEvent = () => {
-        storeModerationEvent(event);
+        // storeModerationEvent(event);
+        // dialog.showSaveDialog({
+        //     title: 'Select the File Path to save',
+        //     defaultPath: path.join(__dirname, '../assets/event.json'),
+        //     // defaultPath: path.join(__dirname, '../assets/'),
+        //     buttonLabel: 'Save',
+        //     // Restricting the user to only Text Files.
+        //     filters: [
+        //         {
+        //             name: 'JSON Files',
+        //             extensions: ['json']
+        //         }, ],
+        //     properties: []
+        // }).then(file => {
+        //     // Stating whether dialog operation was cancelled or not.
+        //     console.log(file.canceled);
+        //     if (!file.canceled) {
+        //         console.log(file.filePath.toString());
+                  
+        //         // Creating and Writing to the sample.txt file
+        //         fs.writeFile(file.filePath.toString(), 
+        //                      JSON.stringify(event), function (err) {
+        //             if (err) throw err;
+        //             console.log('Saved!');
+        //         });
+        //     }
+        // }).catch(err => {
+        //     console.log(err)
+        // });
     };
+
+    const openFile = () => {
+        // dialog.showOpenDialog(function (filePaths) {
+        //     if (filePaths === undefined) {
+        //       return;
+        //     }
+      
+        //     var filePath = filePaths[0];
+      
+        //     try {
+        //         setEvent(fs.readFileSync(filePath, 'utf-8'));      
+        //       console.log('Loaded file:' + filePath);
+        //     } catch (err) {
+        //       console.log('Error reading the file: ' + JSON.stringify(err));
+        //     }
+        // });
+    };
+
+    const eventSelected = e => {
+        let file = e.target.files[0];
+        if(file) {
+            let event = null;
+            const reader = new FileReader();
+            reader.addEventListener('load', ev => {
+                try {
+                    let result = ev.target.result;
+                    event = JSON.parse(result);
+                    console.log(event);
+                    storeModerationEvent(event);
+                    // setCurrentEvent(getModerationEvent());
+                } catch(err) {
+                    console.log(err);
+                }
+            });
+            reader.readAsText(file);
+        }
+    }
 
     const triggerUpload = () => {
         document.getElementById('upload').click();
@@ -688,19 +761,26 @@ const Editor = props => {
                     </h1>
                 </div>
                 <div className="mod-menu-button-array-2">
-                    <Link to={'/home'}>
-                        <div className="mod-menu-button" onClick={null}>Home</div>
-                    </Link>
+                    <div className="mod-menu-button" onClick={saveEvent}>
+                        Save
+                    </div>
+                    {/* <div className="mod-menu-button" onClick={openFile}>
+                        Load
+                    </div> */}
                     <div className="mod-menu-button" onClick={triggerUpload}>
-                        Upload
+                        Load
                         <input type="file" onChange={uploadEvent} id="upload" style={{display: 'none'}}/>
                     </div>
                     <div className="mod-menu-button" onClick={downloadEvent}>
                         Down load
                     </div>
-                    <div className="mod-menu-button" onClick={saveEvent}>
-                        Save
-                    </div>
+                </div>
+                <div style={{display: "none"}}>
+                    <input 
+                        type="file"
+                        ref={refUpload}
+                        onChange={eventSelected}
+                    ></input>
                 </div>
             </div>
             <div className="sidepanel panel double-r">

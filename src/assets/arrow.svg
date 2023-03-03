@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+<svg width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" xmlSpace="preserve" xmlnsSerif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
     <g transform="matrix(1,0,0,1,-2248,0)">
         <rect id="more" x="2248" y="0" width="512" height="512" style="fill:none;"/>
-        <g id="more1" serif:id="more">
+        <g id="more1" serifId="more">
             <g transform="matrix(-1,1.22465e-16,1.22465e-16,1,3395.55,-4.54747e-13)">
                 <path d="M936.301,76.245C953.506,64.178 977.432,65.829 992.802,81.198C1010.02,98.417 1010.02,126.376 992.802,143.594L880.396,256L992.802,368.406C1010.02,385.624 1010.02,413.583 992.802,430.802C977.432,446.171 953.506,447.822 936.301,435.755L792.096,291.551C772.475,271.93 772.475,240.07 792.096,220.449L936.301,76.245Z"/>
             </g>

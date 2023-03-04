@@ -58,8 +58,12 @@ function createWindow() {
                                 properties: ['openFile'],
                                 filters: [
                                     {
+                                        name: 'TFGame Event',
+                                        extensions: ['tfgame']
+                                    },
+                                    {
                                         name: 'JSON',
-                                        extensions: ['json']
+                                        extensions: ['json', 'tfgame']
                                     }
                                 ]
                             }).then(fileObj => {
@@ -183,6 +187,10 @@ const openSaveDialog = next => {
     dialog.showSaveDialog({
         properties: ['openFile'],
         filters: [
+            {
+                name: 'TFGame Event',
+                extensions: ['tfgame']
+            },
             {
                 name: 'JSON',
                 extensions: ['json']

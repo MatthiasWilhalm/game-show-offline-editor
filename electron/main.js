@@ -13,32 +13,46 @@ const fs = require('fs');
 
 const dialog = electron.dialog;
 
+const EDITOR_VERSION = "1.0.0";
+
 let mainWindow;
+
+var currentFilePath = null;
+
+const defaultTitle = "TFGame Editor - ";
+let currentEventName = '';
 
 function createWindow() {
     mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
+        icon: path.join(__dirname, 'icon.png'),
         webPreferences: {
             // contextIsolation: false,
             // nodeIntegration: true,
             preload: path.join(__dirname, 'preload.js')
         }
-    });
-    // menu with save and load option
+    });    // menu with save and load option
     mainWindow.setMenu(
         electron.Menu.buildFromTemplate([
+
             {
                 label: 'File',
                 submenu: [
                     {
                         label: 'Save',
+                        accelerator: 'CmdOrCtrl+S',
                         click: () => {
-                            mainWindow.webContents.send('save');
+                            if(!currentFilePath) {
+                                openSaveDialog(() => mainWindow.webContents.send('save-request'));
+                            } else {
+                                mainWindow.webContents.send('save-request');
+                            }
                         }
                     },
                     {
                         label: 'Open',
+                        accelerator: 'CmdOrCtrl+O',
                         click: () => {
                             dialog.showOpenDialog({
                                 properties: ['openFile'],
@@ -51,19 +65,31 @@ function createWindow() {
                             }).then(fileObj => {
                                 if (!fileObj.canceled) {
                                     const filepath = fileObj.filePaths[0];
-                                    fs.readFile(filepath, 'utf-8', (err, data) => {
-                                        if(err){
-                                            alert("An error ocurred reading the file :" + err.message);
-                                            return;
-                                        }
-                                        mainWindow.webContents.send('update-event', data);
-                                        // mainWindow.sessionStorage.setItem('moderationEvent', data);
-                                        // triggerEventUpdate();
-                                    });
+                                    openFile(filepath);
                                 }
                             });
                         }
+                    },
+                    {
+                        label: 'New',
+                        accelerator: 'CmdOrCtrl+N',
+                        click: () => {
+                            mainWindow.webContents.send('update-event', null);
+                            setCurrentPath(mainWindow, null);
+                        }
+                    },
+                    {
+                        label: 'Save As',
+                        accelerator: 'CmdOrCtrl+Shift+S',
+                        click: () => {
+                            openSaveDialog(() => mainWindow.webContents.send('save-request'));
+                        }
+                    },
+                    {
+                        label: `Version ${EDITOR_VERSION}`,
+                        enabled: false
                     }
+
                 ]
             }
         ])
@@ -85,7 +111,25 @@ function createWindow() {
     })
 }
 
-app.on('ready', createWindow);
+app.on('ready', () => {
+    ipcMain.on('save', (ev, event) => {
+        if (currentFilePath) {
+            saveFile(event);
+        } else {
+            openSaveDialog(() => saveFile(event));
+        }
+    });
+
+    ipcMain.on('set-title', (event, title) => {
+        const webContents = event.sender;
+        const win = BrowserWindow.fromWebContents(webContents);
+        setTitleEventName(win, title);
+    });
+
+    createWindow();
+    updateTitle(mainWindow);
+
+});
 
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
@@ -99,7 +143,59 @@ app.on('activate', function () {
     }
 });
 
-function triggerEventUpdate() {
-    const eventUpdate = sessionStorage.getItem('eventUpdate');
-    window.sessionStorage.setItem('eventUpdate', eventUpdate === 'true' ? 'false' : 'true');
+const setCurrentPath = (window, path) => {
+    currentFilePath = path;
+    updateTitle(window);
+};
+
+const setTitleEventName = (window, name) => {
+    currentEventName = name;
+    updateTitle(window);
+};
+
+const updateTitle = window => {
+    window.setTitle(defaultTitle + currentEventName + (currentFilePath ? ` (${currentFilePath})` : ''));
 }
+
+const saveFile = event => {
+    if(currentFilePath && event) {
+        try {
+            fs.writeFileSync(currentFilePath, event, 'utf-8');
+        } catch (err) {
+            console.error(err);
+        }
+    }
+};
+
+const openFile = filepath => {
+    fs.readFile(filepath, 'utf-8', (err, data) => {
+        if(err){
+            console.log("An error ocurred reading the file :" + err.message);
+            return;
+        }
+        setCurrentPath(mainWindow, filepath);
+        mainWindow.webContents.send('update-event', data);
+    });
+};
+
+
+const openSaveDialog = next => {
+    dialog.showSaveDialog({
+        properties: ['openFile'],
+        filters: [
+            {
+                name: 'JSON',
+                extensions: ['json']
+            }
+        ]
+    }).then(fileObj => {
+        console.log(fileObj);
+        if(fileObj.canceled) return;
+
+        setCurrentPath(mainWindow, fileObj.filePat);
+        console.log(currentFilePath);
+        if(next) next();
+    }).catch(err => {
+        console.log(err)
+    });
+};

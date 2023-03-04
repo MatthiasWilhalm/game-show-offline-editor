@@ -1,22 +1,16 @@
-// Import the necessary Electron modules
 const { contextBridge, ipcRenderer } = require('electron');
 
-// Exposed protected methods in the render process
-// contextBridge.exposeInMainWorld(
-//     // Allowed 'ipcRenderer' methods
-//     'bridge', {
-//         // From main to render
-//         sendSettings: (message) => {
-//             ipcRenderer.on('sendSettings', message);
-//         }
-//     }
-// );
-
-// ipcRenderer.on('asynchronous-reply', (_event, arg) => {
-//     console.log(arg) // prints "pong" in the DevTools console
-// });
-
-
 contextBridge.exposeInMainWorld('electronAPI', {
-  handleEventUpdate: (callback) => ipcRenderer.on('update-event', callback)
+  handleEventUpdate: (callback) => {
+    const sub = (...args) => callback(...args);
+    ipcRenderer.on('update-event', sub);
+    return () => ipcRenderer.removeListener('update-event', sub);
+  },
+  handleEventSave: (callback) => {
+    const sub = (...args) => callback(...args);
+    ipcRenderer.on('save-request', sub);
+    return () => ipcRenderer.removeListener('save-request', sub);
+  },
+  setTitle: (title) => ipcRenderer.send('set-title', title),
+  saveEvent: (event) => ipcRenderer.send('save', event),
 })

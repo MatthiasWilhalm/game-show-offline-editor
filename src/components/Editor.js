@@ -1,8 +1,7 @@
 import { useEffect, useReducer, createRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { Event } from "../tools/Event";
 import { Game } from "../tools/Game";
-import { getModerationEvent, storeModerationEvent } from "../tools/tools";
+import { storeModerationEvent } from "../tools/tools";
 
 
 const Editor = props => {
@@ -14,28 +13,40 @@ const Editor = props => {
     const [focusedGame, setFocusedGame] = useState(0);
 
     const refUpload = createRef();
-    console.log("editor");
 
     useEffect(() => {
-        setEvent(getModerationEvent() ?? new Event("", []));
-    }, []);
+        const removeUpdatehandler = window.electronAPI.handleEventUpdate((_event, value) => {
+            let newEvent;
+            if(!value)
+                newEvent = new Event("", []);
+            else
+                newEvent = JSON.parse(value);
+            setEvent(e => ({...newEvent}));
+            setTitleDirtyState(false, newEvent?.title);
+            forceUpdate();
+        });
+    
+        const removeSavehamdler = window.electronAPI.handleEventSave((ev, value) => {
+            window.electronAPI.saveEvent(JSON.stringify(event));
+            setTitleDirtyState(false);
+        });
 
-    // window.onstorage = event => {
-    //     if(event.storageArea === sessionStorage && event.key === 'eventUpdate') {
-    //         setEvent(getModerationEvent());
-    //     }
-    // };
+        return () => {
+            removeUpdatehandler();
+            removeSavehamdler();
+        }
 
-    window.electronAPI.handleEventUpdate((_event, value) => {
-        setEvent(JSON.parse(value));
-        // event.sender.send('update-event', value)
-    })
+    }, [event]);
 
     const handleUpdate = (name, value) => {
         event[name] = value;
         setEvent(event);
+        setTitleDirtyState(true);
         forceUpdate();
-        console.log(event);
+    }
+
+    const setTitleDirtyState = (isDirty, title) => {
+        window.electronAPI.setTitle((title ?? event?.title ?? "New") + (isDirty ? "*" : ""));
     }
 
     const updateGame = (name, value, game) => {
@@ -766,11 +777,6 @@ const Editor = props => {
                     <h1>
                         {"Editor"}
                     </h1>
-                </div>
-                <div className="mod-menu-button-array-2">
-                    <div className="mod-menu-button" onClick={downloadEvent}>
-                        Down load
-                    </div>
                 </div>
                 <div style={{display: "none"}}>
                     <input 

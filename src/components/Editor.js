@@ -15,25 +15,29 @@ const Editor = props => {
     const refUpload = createRef();
 
     useEffect(() => {
-        const removeUpdatehandler = window.electronAPI.handleEventUpdate((_event, value) => {
-            let newEvent;
-            if(!value)
-                newEvent = new Event("", []);
-            else
-                newEvent = JSON.parse(value);
-            setEvent(e => ({...newEvent}));
-            setTitleDirtyState(false, newEvent?.title);
-            forceUpdate();
-        });
-    
-        const removeSavehamdler = window.electronAPI.handleEventSave((ev, value) => {
-            window.electronAPI.saveEvent(JSON.stringify(event));
-            setTitleDirtyState(false);
-        });
+        let removeUpdatehandler;
+        let removeSavehamdler;
+        if(window.electronAPI) {
+            removeUpdatehandler = window.electronAPI.handleEventUpdate((_event, value) => {
+                let newEvent;
+                if(!value)
+                    newEvent = new Event("", []);
+                else
+                    newEvent = JSON.parse(value);
+                setEvent(e => ({...newEvent}));
+                setTitleDirtyState(false, newEvent?.title);
+                forceUpdate();
+            });
+        
+            removeSavehamdler = window.electronAPI.handleEventSave((ev, value) => {
+                window.electronAPI.saveEvent(JSON.stringify(event));
+                setTitleDirtyState(false);
+            });
+        }
 
         return () => {
-            removeUpdatehandler();
-            removeSavehamdler();
+            if(removeUpdatehandler) removeUpdatehandler();
+            if(removeSavehamdler) removeSavehamdler();
         }
 
     }, [event]);

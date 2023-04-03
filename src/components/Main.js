@@ -1,7 +1,7 @@
 import {
     Routes,
     Route,
-
+    Navigate 
 } from "react-router-dom";
 
 import Editor from './Editor';
@@ -15,7 +15,7 @@ const Main = () => {
     return (
         <div>
             <Routes>
-                <Route exact path="/" element={<Editor/>}></Route>
+                <Route exact path="/" element={<Navigate replace to="/editor"/>}></Route>
                 <Route path="/editor" element={<Editor/>}></Route>
             </Routes>
         </div>

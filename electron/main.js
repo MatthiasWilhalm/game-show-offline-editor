@@ -98,8 +98,8 @@ function createWindow() {
             }
         ])
     );
-    mainWindow.loadURL('http://localhost:3000');
-    // mainWindow.loadFile('test.html');
+    // mainWindow.loadURL('http://localhost:3000');
+    // mainWindow.loadFile('./build/index.html');
 
     // const startUrl = process.env.ELECTRON_START_URL || url.format({
     //     pathname: path.join(__dirname, '/../build/index.html'),
@@ -107,6 +107,28 @@ function createWindow() {
     //     slashes: true
     // });
     // mainWindow.loadURL(startUrl);
+    // mainWindow.loadURL('file:///' + __dirname + "/index.html");
+    
+    // mainWindow.loadFile('build/index.html');
+
+    const appURL = app.isPackaged
+    ? url.format({
+        pathname: path.join(__dirname, "build/index.html"),
+        protocol: "file:",
+        slashes: true,
+      })
+    : "http://localhost:3000";
+    mainWindow.loadURL(appURL);
+
+    // mainWindow.loadURL('http://localhost:3000');
+
+
+    // if (process.env.REACT_APP_ENV_UPDATE_CHANNEL_STRING === 'dev') {
+    //     // mainWindow.loadURL(startUrl);
+    //     mainWindow.loadURL('http://localhost:3000');
+    // } else {
+    //     mainWindow.loadURL('file:///' + __dirname + "/index.html");
+    // }
 
     mainWindow.webContents.openDevTools();
 
